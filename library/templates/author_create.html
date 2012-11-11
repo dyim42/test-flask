@@ -1,0 +1,7 @@
+{% from 'macros.html' import field_as_row, field_password_as_row  %}
+<input type="hidden" id="id" value="{{ author.id }}">
+<table class="table table-bordered">
+    <tr>
+        {{ field_as_row(form.name) }}
+    </tr>
+</table>

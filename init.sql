@@ -7,9 +7,23 @@ CREATE TABLE profile (
     email           VARCHAR(100) UNIQUE,
     about           VARCHAR(1000),
     passwd          VARCHAR(32),
-
     birthday        DATE
 );
+
+
+DROP TABLE author;
+CREATE TABLE author (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    name            VARCHAR(100)
+);
+
+
+DROP TABLE book;
+CREATE TABLE book (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    name            VARCHAR(100)
+);
+
 COMMIT;
 
 INSERT INTO profile (name, email, about, passwd, birthday) VALUES ('anonymous', 'anonymous', 'This is anonymous user entry.', 'no password', '1901-11-11');
@@ -22,5 +36,29 @@ INSERT INTO profile (name, email, about, passwd, birthday) VALUES ('Гречко
 INSERT INTO profile (name, email, about, passwd, birthday) VALUES ('Рубан Петр', 'ruban@example.com', 'Штурман 990-го ночного бомбардировочного авиационного полка 313-й ночной бомбардировочной авиационной дивизии 15-й воздушной армии 2-го Прибалтийского фронта, майор.', 'no password', '1931-12-05');
 INSERT INTO profile (name, email, about, passwd, birthday) VALUES ('Нахимов Павел', 'naximov@example.com', 'Знаменитый русский адмирал.(хм, википедия немногословна)', 'no password', '1931-12-05');
 INSERT INTO profile (name, email, about, passwd, birthday) VALUES ('Багратион Павел', 'bagration@example.com', 'российский генерал от инфантерии, командующий 2-й русской армией в начале Отечественной войны 1812 года.', 'no password', '1931-12-05');
+
+INSERT INTO author (name) VALUES ('Булгаков, Михаил Афанасьевич');
+
+INSERT INTO book (name) VALUES ('Белая гвардия');
+INSERT INTO book (name) VALUES ('Собачье сердце');
+INSERT INTO book (name) VALUES ('Мастер и Маргарита');
+
+INSERT INTO author (name) VALUES ('Даррелл, Джеральд');
+
+INSERT INTO book (name) VALUES ('Перегруженный ковчег (The Overloaded Ark)');
+INSERT INTO book (name) VALUES ('Гончие Бафута (The Bafut Beagles)');
+INSERT INTO book (name) VALUES ('Говорящий свёрток (The Talking Parcel)');
+
+INSERT INTO author (name) VALUES ('Адамсон, Джой');
+
+INSERT INTO book (name) VALUES ('Born Free: A lioness of two worlds');
+INSERT INTO book (name) VALUES ('Living Free: The story of Elsa and her cubs');
+INSERT INTO book (name) VALUES ('The Spotted Sphinx');
+INSERT INTO book (name) VALUES ('Pippa: The Cheetah and her Cubs');
+INSERT INTO book (name) VALUES ('Peoples of Kenya');
+
+
+
+
 
 

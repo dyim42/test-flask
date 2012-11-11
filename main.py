@@ -14,8 +14,8 @@ app.session_interface = RedisSessionInterface()
 # Blueprints
 from profile import profile
 app.register_blueprint(profile.profile, url_prefix='/profile')
-#from library import authors
-#app.register_blueprint(authors.authors, url_prefix='/authors')
+from library import author
+app.register_blueprint(author.author, url_prefix='/authors')
 #from library import books
 #pp.register_blueprint(books.book, url_prefix='/book')
 
@@ -30,7 +30,6 @@ SQLAlchemy_engine = create_engine(app.config['DATABASE'],
     echo = True
 )
 SQLA_session = sessionmaker(bind=SQLAlchemy_engine, autoflush=False)
-
 
 @app.before_request
 def before_request():
@@ -56,21 +55,6 @@ def teardown_request(exception):
     # rollback transaction
     g.db.rollback() 
     # and here is the place to email an exception to developer
-
-
-
-
-from sqlalchemy import MetaData
-metadata = MetaData()
-metadata.create_all(bind=SQLAlchemy_engine)
-
-
-
-
-
-
-
-
 
 
 # run application

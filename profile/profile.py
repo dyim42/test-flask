@@ -46,7 +46,7 @@ def create():
         # make new entry
         new_profile = models.Profile()
         form.populate_obj(new_profile)
-        profile.passwd = password_hash
+        new_profile.passwd = password_hash
         g.db.add(new_profile)
         g.db.flush()
         # inform that it`s all OK
@@ -74,9 +74,9 @@ def lst():
 @profile.route('/update_form/<int:id>', methods=['GET'])
 def update_form(id):
     """ Function renders user`s profile update page. """
-    profile = models.Profile.query_db().get(id)
+    _profile = models.Profile.query_db().get(id)
     form = forms.Profile()
-    form.process(obj=profile)
+    form.process(obj=_profile)
     form.password.data = PSWD_substitute
     form.confirm_password.data = PSWD_substitute
     context = {
@@ -91,7 +91,7 @@ def update_form(id):
 @profile.route('/update/', methods=['POST'])
 def update():
     """ Function updates user`s profile. """
-    profile = models.Profile.query_db().get(request.form['id'])
+    _profile = models.Profile.query_db().get(request.form['id'])
     form = forms.Profile()
     form.process(request.form)
 
@@ -100,13 +100,13 @@ def update():
         old_password_hash = profile.passwd
         new_password_hash = md5x2(form.password.data, salt)
         # make new entry
-        form.populate_obj(profile)
+        form.populate_obj(_profile)
         if form.password.data == PSWD_substitute:
-            profile.passwd = old_password_hash
+            _profile.passwd = old_password_hash
         else:
-            profile.passwd = new_password_hash
+            _profile.passwd = new_password_hash
 
-        g.db.add(profile)
+        g.db.add(_profile)
         g.db.flush()
         # inform that it`s all OK
         return 'OK'
@@ -122,8 +122,8 @@ def update():
 @profile.route('/delete/', methods=['POST'])
 def delete():
     """ Function deletes user`s profile. """
-    profile = models.Profile.query_db().get(request.form['id'])
-    g.db.delete(profile)
+    _profile = models.Profile.query_db().get(request.form['id'])
+    g.db.delete(_profile)
     g.db.flush()
     return 'OK'
 

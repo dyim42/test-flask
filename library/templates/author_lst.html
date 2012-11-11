@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+
+{% block main_content %}
+
+<script>
+
+
+function get_remote(url, modal_name) {
+    $.get(url, function(data) {
+        render_modal(data, modal_name);
+    });
+};
+
+
+function render_modal(data, modal_name) {
+    $('#' + modal_name).modal();
+    $('#' + modal_name).modal({ keyboard: false });
+    $(".modal-body" + modal_name).html('');
+    $(".modal-body" + modal_name).append(data);
+    $('#' + modal_name).modal('show');
+};
+
+function delete_modal(modal_name) {
+    $('#' + modal_name).modal('hide');
+    $(".modal-body").html('');
+};
+
+function create() {
+    // Collect data
+    var post = {};
+    post['name'] = $('#name').val();
+
+    // Send data to the server
+    var url = '{{ url_for('author.create') }}';
+    $.post(url,
+        post,
+        function(data) {
+            if (data ==  'OK') {
+                window.location.replace("{{ url_for('author.lst') }}");
+            }
+            else {
+                render_modal(data, modal_name);
+            };
+        });
+};
+
+
+function update() {
+    // Collect data
+    var post = {};
+    post['id'] = $('#id').val();
+    post['name'] = $('#name').val();
+    // Send data to the server
+    var update_url = '{{ url_for('author.update') }}';
+    $.post(update_url,
+        post,
+        function(data) {
+            if (data ==  'OK') {
+                window.location.replace("{{ url_for('author.lst') }}");
+            }
+            else {
+                render_modal(data, modal_name);
+            };
+        });
+};
+
+
+function render_delete(user_name, url, id) {
+    // Collect data
+    var data = "Do you really wish to delete user '" + user_name + "'?";
+    // kind render_model
+    $('#delete_modal').modal();
+    $('#delete_modal').modal({ keyboard: false });
+    $(".modal-bodydelete_modal").html('');
+    $(".modal-bodydelete_modal").append(data);
+    $('#delete_modal').modal('show');
+    $("#delete_modal_ok_button").attr('onclick', 'del(url = "' + url + '", id = "' + id + '")');
+};
+
+
+function del(url, id) {
+    $.post(url,
+        {'id': id},
+        function(data) {
+            if (data ==  'OK') {
+                window.location.replace("{{ url_for('author.lst') }}");
+            }
+            else {
+                render_modal(data, modal_name);
+            };
+        });
+}
+</script>
+
+
+<a class="btn" href="javascript://"  style="margin-top:5px;" onclick="get_remote(url='{{ url_for('author.create_form') }}', modal_name = 'create_modal')">Create new</a>
+
+<!-- Modals-->
+<!-- Create modal window -->
+<div id="create_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="create_modalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <!--button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button-->
+        <a onclick='delete_modal("create_modal")' class="close">X</a>
+        <h3 id="create_modalLabel">Create User</h3>
+    </div>
+    <div class="modal-bodycreate_modal"></div>
+    <div class="modal-footer">
+        <a href="javascript://" class="btn" data-dismiss="modal" aria-hidden="true">Close</a>
+        <a href="javascript://" class="btn btn-primary" onclick="create()">Save changes</a>
+    </div>
+</div>
+
+<!-- Update modal -->
+<div id="update_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="create_modalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+        <h3 id="update_modalLabel">Update User</h3>
+    </div>
+    <div class="modal-bodyupdate_modal"></div>
+    <div class="modal-footer">
+        <a href="javascript://" class="btn" data-dismiss="modal" aria-hidden="true">Close</a>
+        <a href="javascript://" class="btn btn-primary" onclick="update()">Update changes</a>
+    </div>
+</div>
+
+<!-- delete modal -->
+<div id="delete_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="delete_modalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+        <h3 id="delete_modalLabel">Delete Author</h3>
+    </div>
+    <div class="modal-bodydelete_modal"></div>
+    <div class="modal-footer">
+        <a href="javascript://" class="btn" data-dismiss="modal" aria-hidden="true">No, do not delete</a>
+        <a href="javascript://" class="btn btn-primary" id="delete_modal_ok_button">Yes, delete</a>
+    </div>
+</div>
+<!-- End of modal windows -->
+
+
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <td>#</td>
+            <td>Name</td>
+            <td colspan=2>Books</td>
+        </tr>
+    </thead>
+    <tbody>
+    {% for author in authors %}
+        <tr>
+            <td>
+                <a href="javascript://" onclick="get_remote(url='{{ url_for('author.update_form', id=author.id) }}', modal_name = 'update_modal')">{{ author.id }}</a>
+            </td>
+
+            <td>
+                <a href="javascript://" onclick="get_remote(url='{{ url_for('author.update_form', id=author.id) }}', modal_name = 'update_modal')">{{ author.name }}</a>
+            </td>
+
+            <td>
+                {#
+                {% for book in author.books %}
+                    <span>{{book.name}}</span>{% if not loop.last %}<span class="separator">,</span>{% endfor %}
+                {% endfor %}
+                #}
+            </td>
+
+            <td>
+                <a href="javascript://" class="pull-right" onclick="render_delete(user_name = '{{ author.name }}', url = '{{ url_for('author.delete')}}', id = {{ author.id }})">Delete author</a>
+            </td>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
