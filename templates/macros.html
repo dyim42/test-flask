@@ -1,0 +1,47 @@
+{% macro field_label(field) %}
+    {% if field.errors or 'required' in field.field_flags %}
+        <span class="error">
+            <label {{ 'class="checkbox"' if field.type == 'BooleanField' else '' }} for="{{ field.name }}">{{ field.label.text }}</label>
+        </span>
+    {% else %}
+            <label {{ 'class="checkbox"' if field.type == 'BooleanField' else '' }} for="{{ field.name }}">{{ field.label.text }}
+        {% if 'required' in field.field_flags or  field.flags.required %}
+            <abbr title="{{ 'This field is required.' }}">*</abbr>
+        {% endif %}
+            </label>
+    {% endif %}
+{% endmacro %}
+
+{% macro field_errors(field) %}
+    {% if field.errors %}
+    <ul class="errors">
+        {% for error in field.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+{% endmacro %}
+
+{% macro field_as_row(field) %}
+<tr>
+    <td>
+        {{ field_label(field) }}
+    </td>
+    <td>
+        {{ field(**field.kwargs) if field.kwargs else field() }}
+        {{ field_errors(field) }}
+    </td>
+</tr>
+{% endmacro %}
+
+{% macro field_password_as_row(field, insert_password=False) %}
+<tr>
+    <td>
+        {{ field_label(field) }}
+    </td>
+    <td>
+        <input id="{{ field.id }}" name="{{ field.name }}" type="password" value="{{ insert_password or '' | e }}" />
+        {{ field_errors(field) }}
+    </td>
+</tr>
+{% endmacro %}

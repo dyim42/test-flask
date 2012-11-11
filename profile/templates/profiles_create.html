@@ -1,0 +1,24 @@
+{% from 'macros.html' import field_as_row, field_password_as_row  %}
+{% if action == 'update' %}
+    <input type="hidden" name="id" id="id" value="{{ profile.id }}">
+{% endif %}
+<table class="table table-bordered">
+    <tr>
+        {{ field_as_row(form.name) }}
+    </tr>
+    <tr>
+        {{ field_as_row(form.email) }}
+    </tr>
+    <tr>
+        {{ field_as_row(form.birthday) }}
+    </tr>
+    <tr>
+        {{ field_as_row(form.about) }}
+    </tr>
+    <tr>
+        {{ field_password_as_row(form.password, form.password.data) }}
+    </tr>
+    <tr>
+        {{ field_password_as_row(form.confirm_password, form.confirm_password.data) }}
+    </tr>
+</table>

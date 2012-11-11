@@ -5,4 +5,4 @@ flask/*
 sqlalchemy/*
 wtforms/*
 werkzeug/*
-
+jinja2/*
