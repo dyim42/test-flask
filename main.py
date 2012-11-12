@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # from python imports
+
 # from flask imports
 from flask import Flask, g
 
@@ -16,8 +17,8 @@ from profile import profile
 app.register_blueprint(profile.profile, url_prefix='/profile')
 from library import author
 app.register_blueprint(author.author, url_prefix='/authors')
-#from library import books
-#pp.register_blueprint(books.book, url_prefix='/book')
+from library import book
+app.register_blueprint(book.book, url_prefix='/book')
 
 
 from sqlalchemy import create_engine
