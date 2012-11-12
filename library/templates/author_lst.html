@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
 {% block main_content %}
-
 <script>
 
+$.ajaxSettings.traditional = true;
 
 function get_remote(url, modal_name) {
     $.get(url, function(data) {
@@ -20,16 +20,20 @@ function render_modal(data, modal_name) {
     $('#' + modal_name).modal('show');
 };
 
+
+// function removes modal window
 function delete_modal(modal_name) {
+    $(".modal_table").remove();
     $('#' + modal_name).modal('hide');
-    $(".modal-body").html('');
+
 };
+
 
 function create() {
     // Collect data
     var post = {};
     post['name'] = $('#name').val();
-
+    post['books_mtm'] = $('#books_mtm').val() || [];
     // Send data to the server
     var url = '{{ url_for('author.create') }}';
     $.post(url,
@@ -50,6 +54,8 @@ function update() {
     var post = {};
     post['id'] = $('#id').val();
     post['name'] = $('#name').val();
+    post['books_mtm'] = $('#books_mtm').val() || [];
+
     // Send data to the server
     var update_url = '{{ url_for('author.update') }}';
     $.post(update_url,
@@ -103,20 +109,20 @@ function del(url, id) {
     </div>
     <div class="modal-bodycreate_modal"></div>
     <div class="modal-footer">
-        <a href="javascript://" class="btn" data-dismiss="modal" aria-hidden="true">Close</a>
+        <a onclick='delete_modal("create_modal")' class="btn">Close</a>
         <a href="javascript://" class="btn btn-primary" onclick="create()">Save changes</a>
     </div>
 </div>
 
 <!-- Update modal -->
-<div id="update_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="create_modalLabel" aria-hidden="true">
+<div id="update_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="update_modalLabel" aria-hidden="true">
     <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+        <a onclick='delete_modal("update_modal")' class="close">X</a>
         <h3 id="update_modalLabel">Update author</h3>
     </div>
     <div class="modal-bodyupdate_modal"></div>
     <div class="modal-footer">
-        <a href="javascript://" class="btn" data-dismiss="modal" aria-hidden="true">Close</a>
+        <a onclick='delete_modal("update_modal")' class="btn">Close</a>
         <a href="javascript://" class="btn btn-primary" onclick="update()">Update changes</a>
     </div>
 </div>
@@ -129,7 +135,7 @@ function del(url, id) {
     </div>
     <div class="modal-bodydelete_modal"></div>
     <div class="modal-footer">
-        <a href="javascript://" class="btn" data-dismiss="modal" aria-hidden="true">No, do not delete</a>
+        <a onclick='delete_modal("delete_modal")' class="btn">Close</a>
         <a href="javascript://" class="btn btn-primary" id="delete_modal_ok_button">Yes, delete</a>
     </div>
 </div>
@@ -157,16 +163,15 @@ function del(url, id) {
             </td>
 
             <td>
-                {#
                 {% for book in author.books %}
-                    <span>{{book.name}}</span>{% if not loop.last %}<span class="separator">,</span>{% endfor %}
+                    <nobr>{{book.name}}</nobr>{% if not loop.last %}<span class="separator">,</span>{% endif %}
                 {% endfor %}
-                #}
             </td>
-
+            {% if has_access() %}
             <td>
-                <a href="javascript://" class="pull-right" onclick="render_delete(author_name = '{{ author.name }}', url = '{{ url_for('author.delete')}}', id = {{ author.id }})">Delete author</a>
+                <a href="javascript://" class="pull-right" onclick="render_delete(author_name = '{{ author.name  | e | js_e }}', url = '{{ url_for('author.delete')}}', id = {{ author.id }})">Delete</a>
             </td>
+            {% endif %}
     {% endfor %}
     </tbody>
 </table>

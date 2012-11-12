@@ -1,5 +1,8 @@
 {% from 'macros.html' import field_as_row, field_password_as_row  %}
-<input type="hidden" id="id" value="{{ author.id }}">
+<div class="modal_table">
+{% if action == 'update' %}
+    <input type="hidden" id="id" value="{{ profile.id }}">
+{% endif %}
 <table class="table table-bordered">
     <tr>
         {{ field_as_row(form.name) }}
@@ -20,3 +23,4 @@
         {{ field_password_as_row(form.confirm_password, form.confirm_password.data) }}
     </tr>
 </table>
+</div>

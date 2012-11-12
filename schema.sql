@@ -1,6 +1,7 @@
 BEGIN;
 
-DROP TABLE profile;
+
+DROP TABLE IF EXISTS profile;
 CREATE TABLE profile (
     id              INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     name            VARCHAR(50),
@@ -11,20 +12,21 @@ CREATE TABLE profile (
 );
 
 
-DROP TABLE author;
+DROP TABLE IF EXISTS author;
 CREATE TABLE author (
     id              INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     name            VARCHAR(100)
 );
 
 
-DROP TABLE book;
+DROP TABLE IF EXISTS book;
 CREATE TABLE book (
     id              INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     name            VARCHAR(200)
 );
 
-DROP TABLE author_book_mtm;
+
+DROP TABLE IF EXISTS author_book_mtm;
 CREATE TABLE author_book_mtm (
     id              INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     author_id       INTEGER REFERENCES author(id),
@@ -52,11 +54,21 @@ INSERT INTO book (id, name) VALUES (1, 'Белая гвардия');
 INSERT INTO book (id, name) VALUES (2, 'Собачье сердце');
 INSERT INTO book (id, name) VALUES (3, 'Мастер и Маргарита');
 
+INSERT INTO author_book_mtm (id, author_id, book_id) VALUES (1, 1, 1);
+INSERT INTO author_book_mtm (id, author_id, book_id) VALUES (2, 1, 2);
+INSERT INTO author_book_mtm (id, author_id, book_id) VALUES (3, 1, 3);
+
+
 INSERT INTO author (id, name) VALUES (2, 'Даррелл, Джеральд');
 
 INSERT INTO book (id, name) VALUES (4, 'Перегруженный ковчег (The Overloaded Ark)');
 INSERT INTO book (id, name) VALUES (5, 'Гончие Бафута (The Bafut Beagles)');
 INSERT INTO book (id, name) VALUES (6, 'Говорящий свёрток (The Talking Parcel)');
+
+INSERT INTO author_book_mtm (id, author_id, book_id) VALUES (4, 2, 4);
+INSERT INTO author_book_mtm (id, author_id, book_id) VALUES (5, 2, 5);
+INSERT INTO author_book_mtm (id, author_id, book_id) VALUES (6, 2, 6);
+
 
 INSERT INTO author (id, name) VALUES (3, 'Адамсон, Джой');
 
@@ -66,8 +78,31 @@ INSERT INTO book (id, name) VALUES (9, 'The Spotted Sphinx');
 INSERT INTO book (id, name) VALUES (10, 'Pippa: The Cheetah and her Cubs');
 INSERT INTO book (id, name) VALUES (11, 'Peoples of Kenya');
 
+INSERT INTO author_book_mtm (id, author_id, book_id) VALUES (7, 3, 7);
+INSERT INTO author_book_mtm (id, author_id, book_id) VALUES (8, 3, 8);
+INSERT INTO author_book_mtm (id, author_id, book_id) VALUES (9, 3, 9);
+INSERT INTO author_book_mtm (id, author_id, book_id) VALUES (10, 3, 10);
+INSERT INTO author_book_mtm (id, author_id, book_id) VALUES (11, 3, 11);
 
 
+INSERT INTO author (id, name) VALUES (4, 'Фейспалмящий чувак из Стартрека');
+INSERT INTO author (id, name) VALUES (5, 'Компания Микрософт');
+INSERT INTO author (id, name) VALUES (6, 'Компания Самсунг');
+INSERT INTO author (id, name) VALUES (7, 'Компания Эппл');
+INSERT INTO author (id, name) VALUES (8, 'Компания Нокия'); --- притворяются живыми ---
+
+
+INSERT INTO book (id, name) VALUES (12, 'Прямоугольный планшет со скругленными углами');
+
+INSERT INTO author_book_mtm (id, author_id, book_id) VALUES (12, 4, 12);
+INSERT INTO author_book_mtm (id, author_id, book_id) VALUES (13, 5, 12);
+INSERT INTO author_book_mtm (id, author_id, book_id) VALUES (14, 6, 12);
+INSERT INTO author_book_mtm (id, author_id, book_id) VALUES (15, 7, 12);
+
+INSERT INTO book (id, name) VALUES (13, 'Самсунг Галакси');
+
+INSERT INTO author_book_mtm (id, author_id, book_id) VALUES (16, 6, 13);
+INSERT INTO author_book_mtm (id, author_id, book_id) VALUES (17, 7, 13);
 
 
 

@@ -35,13 +35,33 @@ def create_form():
 def create():
     """ Function performs author create. """
     form = forms.Author()
-    form.process(request.form)
+
+    # Баг в werkzeug? Мицухико, фашист, перемудрил. Обходим его.
+    req = {}
+    for x in request.form.lists():
+        k, v = x
+        if len(v) == 1: v = v[0]
+        req[k] = v
+    form.process(**req)
+
+    
     if form.validate():
         # make new entry
         _author = models.Author()
         form.populate_obj(_author)
-        g.db.add(new_author)
-        g.db.flush()
+        g.db.add(_author)
+        g.db.flush() # and insert entry to get an id
+        
+        if form.books_mtm.data:
+            for x in form.books_mtm.data:
+                tmp = models.Book.query_db().get(int(x))
+                _author.books.append(tmp)
+            g.db.add(_author)
+            g.db.flush()            
+        else:
+            # just create author entry, without any associations with books
+            pass
+
         # inform that it`s all OK
         return 'OK'
 
@@ -66,7 +86,7 @@ def lst():
 def update_form(id):
     """ Function renders author update page. """
     _author = models.Author.query_db().get(id)
-    form = forms.Author()
+    form = forms.Author(_author)
     form.process(obj=_author)
     context = {
         'author' : _author,
@@ -81,9 +101,27 @@ def update():
     """ Function updates author. """
     _author = models.Author.query_db().get(request.form['id'])
     form = forms.Author()
-    form.process(request.form)
+
+    # and werkzeug.data.ImmutableDict strange behaviour again
+    req = {}
+    for x in request.form.lists():
+        k, v = x
+        if len(v) == 1: v = v[0]
+        req[k] = v
+    form.process(**req)
+
     if form.validate():
-        form.populate_obj(_author)
+        for b in _author.books:
+            _author.books.remove(b)
+        g.db.flush()
+                
+        for x in form.books_mtm.data:
+            tmp = models.Book.query_db().get(int(x))
+            _author.books.append(tmp)
+        g.db.add(_author)
+        g.db.flush()            
+
+        form.populate_obj(_author)        
         g.db.add(_author)
         g.db.flush()
         # inform front-end that it`s all OK
@@ -100,6 +138,7 @@ def update():
 @author.route('/delete/', methods=['POST'])
 def delete():
     """ Function deletes author. """
+    if not profile.has_access(): abort(403)
     _author = models.Author.query_db().get(request.form['id'])
     g.db.delete(_author)
     g.db.flush()

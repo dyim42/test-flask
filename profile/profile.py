@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 # from python
 import md5
 
@@ -44,10 +43,10 @@ def create():
         password_hash = md5x2(form.password.data, salt)
 
         # make new entry
-        new_profile = models.Profile()
-        form.populate_obj(new_profile)
-        new_profile.passwd = password_hash
-        g.db.add(new_profile)
+        _profile = models.Profile()
+        form.populate_obj(_profile)
+        _profile.passwd = password_hash
+        g.db.add(_profile)
         g.db.flush()
         # inform that it`s all OK
         return 'OK'
@@ -75,31 +74,34 @@ def lst():
 def update_form(id):
     """ Function renders user`s profile update page. """
     _profile = models.Profile.query_db().get(id)
+    if not _profile: abort(404)
+
     form = forms.Profile()
     form.process(obj=_profile)
     form.password.data = PSWD_substitute
     form.confirm_password.data = PSWD_substitute
     context = {
-        'profile' : profile,
+        'profile' : _profile,
         'action': 'update',
         'form': form,
     }
     return render_template('profiles_create.html', **context)
 
 
-
 @profile.route('/update/', methods=['POST'])
 def update():
-    """ Function updates user`s profile. """
-    _profile = models.Profile.query_db().get(request.form['id'])
+    """ Function updates user profile. """
+    id = int(request.form['id'])
+    _profile = models.Profile.query_db().get(id)
+    if not _profile: abort(404)
     form = forms.Profile()
     form.process(request.form)
 
     if form.validate():
         salt = current_app.config['PASSWORD_SALT']
-        old_password_hash = profile.passwd
+        old_password_hash = _profile.passwd
         new_password_hash = md5x2(form.password.data, salt)
-        # make new entry
+        # update entry
         form.populate_obj(_profile)
         if form.password.data == PSWD_substitute:
             _profile.passwd = old_password_hash
@@ -108,11 +110,11 @@ def update():
 
         g.db.add(_profile)
         g.db.flush()
-        # inform that it`s all OK
+        # inform front-end that it`s all OK
         return 'OK'
 
     context = {
-        'profile' : profile,
+        'profile' :_profile,
         'action': 'update',
         'form': form,
     }
@@ -122,7 +124,11 @@ def update():
 @profile.route('/delete/', methods=['POST'])
 def delete():
     """ Function deletes user`s profile. """
-    _profile = models.Profile.query_db().get(request.form['id'])
+    if not profile.has_access(): abort(403)
+    id = int(request.form['id'])
+    _profile = models.Profile.query_db().get(id)
+    if not _profile: abort(404)
+
     g.db.delete(_profile)
     g.db.flush()
     return 'OK'

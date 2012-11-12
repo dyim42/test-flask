@@ -1,4 +1,5 @@
 {% from 'macros.html' import field_as_row  %}
+<div class="modal_table">
 {% if action == 'update' %}
     <input type="hidden" id="id" value="{{ book.id }}">
 {% endif %}
@@ -7,3 +8,4 @@
         {{ field_as_row(form.name) }}
     </tr>
 </table>
+</div>

@@ -8,7 +8,6 @@ SQLABase = declarative_base()
 class Profile(SQLABase):
     __tablename__   = 'profile'
     id              = Column(Integer, primary_key = True, autoincrement = True)
-    # Account info
     name            = Column(String(length=50))
     email           = Column(String(length=100), unique=True)
     about           = Column(String(length=1000))

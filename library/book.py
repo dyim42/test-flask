@@ -100,6 +100,7 @@ def update():
 @book.route('/delete/', methods=['POST'])
 def delete():
     """ Function deletes book. """
+    if not profile.has_access(): abort(403)
     _book = models.Book.query_db().get(request.form['id'])
     g.db.delete(_book)
     g.db.flush()

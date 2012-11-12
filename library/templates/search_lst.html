@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block main_content %}
+
+{% if authors %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <td>Found authors</td>
+        </tr>
+    </thead>
+    <tbody>
+    {% for author in authors %}
+        <tr>
+            <td>
+                {{ author.name }}
+            </td>
+
+    {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+{% if books %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <td>Found books</td>
+        </tr>
+    </thead>
+    <tbody>
+    {% for book in books %}
+        <tr>
+            <td>
+                {{ book.name }}
+            </td>
+
+    {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+{%if not authors and not books %}
+Nothing has been found
+{% endif %}
+{% endblock %}
